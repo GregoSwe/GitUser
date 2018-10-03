@@ -6,29 +6,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GitSearchApiBuilder {
+public class GitSearchUserApiBuilder {
 	private GitApiBuilder builder;
 	private Map<String, String> query;
+	private Integer page;
 
-	public GitSearchApiBuilder() {
-		this.builder = new GitApiBuilder().search().addParam("users?q=");
+	public GitSearchUserApiBuilder() {
+		this.builder = new GitApiBuilder().search().addUrl("users?q=");
 		query = new HashMap<>();
+		page = null;
 	}
 
+	public GitSearchUserApiBuilder page(Integer page) {
+		this.page = page;
+		return this;
+	}
 
-	public GitSearchApiBuilder byLanguage(String language) {
+	public GitSearchUserApiBuilder byLanguage(String language) {
 		query.put("language", language);
 		return this;
 	}
 
-	public GitSearchApiBuilder sortedBy(String sort) {
+	public GitSearchUserApiBuilder sortedBy(String sort) {
 		query.put("sort", sort);
 		return this;
 	}
 
 	public URL url() throws MalformedURLException {
 		builder.addParam(query.entrySet().stream().map(entry -> String.format("%s:%s", entry.getKey(), entry.getValue())).collect(Collectors.joining("+")));
-
+		if (page != null) {
+			builder.addParam(String.format("page=%s", page.toString()));
+		}
 		return builder.request();
 	}
 

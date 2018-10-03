@@ -23,7 +23,7 @@ public class GitApiBuilderTest {
 	@Test
 	public void rightResearchRequestWithLanguage() throws IOException {
 
-		URL url = new GitSearchApiBuilder().byLanguage("Java").url();
+		URL url = new GitSearchUserApiBuilder().byLanguage("Java").url();
 		assertThat(getActual(url), is("https://api.github.com/search/users?q=language:Java"));
 
 	}
@@ -31,7 +31,7 @@ public class GitApiBuilderTest {
 	@Test
 	public void rightResearchRequestWithSort() throws MalformedURLException {
 
-		URL url = new GitSearchApiBuilder().sortedBy("random_thing").url();
+		URL url = new GitSearchUserApiBuilder().sortedBy("random_thing").url();
 		assertThat(getActual(url), is("https://api.github.com/search/users?q=sort:random_thing"));
 
 	}
@@ -39,8 +39,16 @@ public class GitApiBuilderTest {
 	@Test
 	public void rightResearchRequestWithSortAndLanguage() throws MalformedURLException {
 
-		URL request = new GitSearchApiBuilder().byLanguage("nice_language").sortedBy("random_thing").url();
+		URL request = new GitSearchUserApiBuilder().byLanguage("nice_language").sortedBy("random_thing").url();
 		assertThat(getActual(request), is("https://api.github.com/search/users?q=language:nice_language+sort:random_thing"));
+
+	}
+
+	@Test
+	public void rightResearchRequestWithSortAndLanguagePaged() throws MalformedURLException {
+
+		URL request = new GitSearchUserApiBuilder().byLanguage("nice_language").sortedBy("random_thing").page(2).url();
+		assertThat(getActual(request), is("https://api.github.com/search/users?q=language:nice_language+sort:random_thing&page=2"));
 
 	}
 

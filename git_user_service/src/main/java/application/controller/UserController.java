@@ -25,26 +25,38 @@ public class UserController {
 		return "please enter a language";
 	}
 
+	@RequestMapping("{language}/{page}")
+	public List<User> userByLanguagePaged(@PathVariable String language, @PathVariable Integer page) {
+		return manageReponse(language, page);
+	}
+
 	@RequestMapping("{language}")
-	public List<User> userWithNumber(@PathVariable String language) {
+	public List<User> userByLanguage(@PathVariable String language) {
+		return manageReponse(language, 1);
+	}
+
+	private List<User> manageReponse(@PathVariable String language, @PathVariable Integer page) {
 		List<User> result = new ArrayList<>();
 		try {
-			List<String> users = service.getLoginByLanguage(language);
-			for (String s : users) {
-				try {
-					result.add(service.getByLogin(s));
-				} catch (IOException e) {
-					addDummyUser(result, e);
-					break;
-				}
-			}
+			List<String> users = service.getLoginByLanguage(language, page);
+			manageUserList(result, users);
 		} catch (IOException e) {
 			addDummyUser(result, e);
 		}
 
 		return result;
+	}
 
 
+	private void manageUserList(List<User> result, List<String> users) {
+		for (String s : users) {
+			try {
+				result.add(service.getByLogin(s));
+			} catch (IOException e) {
+				addDummyUser(result, e);
+				break;
+			}
+		}
 	}
 
 	private void addDummyUser(List<User> result, IOException e) {

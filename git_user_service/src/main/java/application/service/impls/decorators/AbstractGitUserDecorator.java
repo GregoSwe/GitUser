@@ -15,8 +15,8 @@ abstract class AbstractGitUserDecorator implements GitUserService {
 	}
 
 	@Override
-	public List<String> getLoginByLanguage(String language) throws IOException {
-		return component.getLoginByLanguage(language);
+	public List<String> getLoginByLanguage(String language, Integer page) throws IOException {
+		return component.getLoginByLanguage(language, page);
 	}
 
 	@Override

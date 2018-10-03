@@ -42,7 +42,7 @@ public class CacheServiceDecoratorTest {
 		int count = 0;
 
 		@Override
-		public List<String> getLoginByLanguage(String language) {
+		public List<String> getLoginByLanguage(String language, Integer page) throws IOException {
 			return null;
 		}
 
