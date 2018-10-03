@@ -1,8 +1,8 @@
 package application.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import application.model.User;
 import application.service.GitUserService;
@@ -26,18 +26,32 @@ public class UserController {
 	}
 
 	@RequestMapping("{language}")
-	public List<User> userWithNumber(@PathVariable String language) throws IOException {
-
-		return service.getLoginByLanguage(language).stream().map(login -> {
-			try {
-				return service.getByLogin(login);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
+	public List<User> userWithNumber(@PathVariable String language) {
+		List<User> result = new ArrayList<>();
+		try {
+			List<String> users = service.getLoginByLanguage(language);
+			for (String s : users) {
+				try {
+					result.add(service.getByLogin(s));
+				} catch (IOException e) {
+					addDummyUser(result, e);
+					break;
+				}
 			}
-		}).collect(Collectors.toList());
+		} catch (IOException e) {
+			addDummyUser(result, e);
+		}
+
+		return result;
 
 
+	}
+
+	private void addDummyUser(List<User> result, IOException e) {
+		User u = new User();
+		u.name = "error";
+		u.username = e.getMessage();
+		result.add(u);
 	}
 
 
